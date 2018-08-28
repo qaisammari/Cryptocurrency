@@ -63,16 +63,37 @@ contract BCCoin is Interface {
     function transferFrom(address _from, address _to, uint256 _value) public  {
         uint256 allowance = allowed[_from][msg.sender];
         // your code here
-         
-        if (allowance < MAX_UINT256) {
-            allowed[_from][msg.sender] -= _value;
-        }
+        balances[_from] = balances[_from].sub(_value);
+        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+
      
     }    
    
     function approve(address _spender, uint256 _value) public  {
-       // your code here 
+       // your code here
+        allowed[msg.sender][_spender] = _value;
+
+
     }
 
-    
+    function getTokens() public payable{
+        uint256 exchangeTokens = msg.value.div(tokenValue);
+        balances[owner] = balances[owner].sub(exchangeTokens);
+        balances[msg.sender] = balances[msg.sender].add(exchangeTokens);
+    }
+
+
+    function getBalance() public returns(uint256) {
+        return msg.sender.balance;
+    }
+
+    function getEthers(uint256 _tokens) public   {
+        uint256 exchangedEther = _tokens.div(tokenValue);
+        balances[msg.sender] = balances[msg.sender].sub(_tokens);
+        msg.sender.send(exchangedEther);
+    }
+
+
+
 }
