@@ -3,7 +3,7 @@ const Web3 = require('web3');
 const { interface, bytecode } = require('./compile');
 
 const provider = new HDWalletProvider(
-    'bind path street advice junior blame roof fish soda width nasty chuckle',
+    'glory fish civil aisle chest few gap crazy hollow vacant season excess',
     'https://rinkeby.infura.io/v3/5dbf2aa41a7b4e03b2cbe95962583652');
 
 const web3 = new Web3(provider);

@@ -12,16 +12,19 @@ class App extends Component {
     addressFrom: ''
   };
   componentDidMount() {
-    const owner =  "FILL_ME_IN";        // change this line with your current address;
+    const owner =  web3.eth.accounts[0];        // change this line with your current address;
     
     this.setState({ owner });
   }
 
   getTokens = async event => {
     event.preventDefault();
-    const accounts = await // your code here;
+    const accounts = await web3.eth.accounts; // your code here;
     this.setState({ message: 'Waiting on transaction success...' });
-    await // your code here;
+      // await token.methods.getTokens().send({
+      //     from: this.state.owner ,
+      //     value: this.state.value
+      // });
     this.setState({ message: 'You got your tokens!' });
   };
   tokenBalance = async event => { 
