@@ -43,7 +43,7 @@ contract BCCoin is Interface {
 
     constructor (uint256 _initialAmount, string _tokenName, uint8 _decimalUnits, string _tokenSymbol, uint8 _tokenValue) public {
         owner = msg.sender;
-       // your code here
+        // your code here
         initialAmount = _initialAmount;
         name = _tokenName;
         decimals = _decimalUnits;
@@ -55,7 +55,7 @@ contract BCCoin is Interface {
 
 
     function transfer(address _to, uint256 _value) public  {
-       // your code here
+        // your code here
         balances[msg.sender] = balances[msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
     }
@@ -67,11 +67,11 @@ contract BCCoin is Interface {
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
 
-     
-    }    
-   
+
+    }
+
     function approve(address _spender, uint256 _value) public  {
-       // your code here
+        // your code here
         allowed[msg.sender][_spender] = _value;
 
 
