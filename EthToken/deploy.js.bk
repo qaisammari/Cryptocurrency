@@ -1,0 +1,80 @@
+// your code here
+
+const Web3 = require('web3');
+const {interface, bytecode} = require('./compile');
+const HDWalletProvider = require('truffle-hdwallet-provider');
+
+
+const provider = new HDWalletProvider(
+    'glory fish civil aisle chest few gap crazy hollow vacant season excess',
+    'https://rinkeby.infura.io/v3/2880b0374eba43f49570be270b4b0dce');
+const web3 = new Web3(provider);
+
+const deploy = async () => {
+    const accounts = await web3.eth.getAccounts();
+    console.log('AVAILABLE ACCOUNTS: ', accounts);
+
+    console.log('Attempting to deploy from account', accounts[0]);
+
+    const result = await new web3.eth.Contract(JSON.parse(interface))
+        .deploy({
+            data: bytecode,
+            arguments: [100000000000000000000, 'BCCoin', 0, 'BCC' , 100]
+        })
+        .send({ from: accounts[0], gas: '1000000' });
+
+    console.log('Contract deployed to', result.options.address); //address of the deployed contract
+
+};
+
+
+deploy();
+
+
+
+// EDIT ME
+//
+// const deploy = async() => {
+//     console.log('starting deployment .....')
+//     const accounts = await
+//     web3.eth.getAccounts();
+//     console.log('got the accounts .....')
+//
+//
+//     console.log('Attempting to deploy from account', accounts[0]); // address of the deployer
+//
+//     // console.log(JSON.stringify(interface));
+//     console.log(bytecode);
+//
+//     // const result = await new web3.eth.Contract(JSON.parse(interface))
+//     //     .deploy({data: '0x' + bytecode})
+//     //     .send({gas: '1000000', from: accounts[0]});
+//
+//
+//     var myContract = new web3.eth.Contract(JSON.parse(interface));
+//
+//
+//     myContract.deploy({
+//         data: '0x' + bytecode
+//     })
+        // .send({
+        //     from: accounts[0], // default from address
+        //     gasPrice: '20000000000',
+        //     gas: '1000000'// default gas price in wei, 20 gwei in this case
+        // }, function(error, transactionHash){
+        //     console.log("RETURNED .....")
+        //     })
+        // .on('error', function(error){ console.log("ERROR: ", error) })
+        // .on('transactionHash', function(transactionHash){ })
+        // .on('receipt', function(receipt){
+        //     console.log(receipt.contractAddress) // contains the new contract address
+        // })
+        // .on('confirmation', function(confirmationNumber, receipt){
+        //     console.log('confirmation: ', confirmationNumber) // contains the new contract address
+        // });
+
+    // console.log('Contract deployed to', result.options.address); //address of the deployed contract
+
+
+    // console.log("After deploy");
+
