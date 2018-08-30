@@ -84,7 +84,7 @@ contract BCCoin is Interface {    // Inheriting the interface requires implement
         uint _tokensNo = msg.value/tokenValue; 
  
         balances[Owner] -= _tokensNo;
-        balances[msg.sender] += tokensNo;
+        balances[msg.sender] += _tokensNo;
 
         
     }
