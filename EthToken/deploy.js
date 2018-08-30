@@ -5,8 +5,8 @@ const { interface, bytecode } = require('./compile');
 // creating an instance from the provider and passing the metamask 12-words mnemonic, and the link from Infura that you get
 // after creating an account in Infura, and create Rinkeby as the end point.
 const provider = new HDWalletProvider(  
-  'Your 12-words mnemonic here',
-  'https://rinkeby.infura.io/yourApiKeyHere'
+  'glory fish civil aisle chest few gap crazy hollow vacant season excess',
+  'https://rinkeby.infura.io/v3/2880b0374eba43f49570be270b4b0dce'
 );
 
 
@@ -19,7 +19,7 @@ const deploy = async () => {
   console.log('Attempting to deploy from account', accounts[0]);
 
   const result = await new web3.eth.Contract(JSON.parse(interface))    
-    .deploy({ data: "0x"+ bytecode, arguments: [1000, 'BCCoin', 0, 'BC' , 100] }) // Passing the bytecode as hexadecimal and the arguments of the constructor 
+    .deploy({ data: "0x"+ bytecode, arguments: [100000000, 'Tripcoin', 0, 'TRC' , 10] }) // Passing the bytecode as hexadecimal and the arguments of the constructor
     .send({ gas: '1000000', from: accounts[0] });
   contractAddress = result.options.address;
   console.log('Contract deployed to', contractAddress);
