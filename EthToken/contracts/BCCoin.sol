@@ -7,6 +7,9 @@ import "./Interface.sol"; // Importing the interface so it could be inherited in
 contract BCCoin is Interface {    // Inheriting the interface requires implementing all the functions inside the interface.
 
     uint256 constant private MAX_UINT256 = 2**256 - 1;
+    mapping (address => uint256) balances;
+    mapping (address => mapping (address => uint256)) allowed;
+    uint256 public totalSupply;
 
     string public name;                   //fancy name: eg Simon Bucks
     uint8 public decimals;                //How many decimals to show.
@@ -25,6 +28,8 @@ contract BCCoin is Interface {    // Inheriting the interface requires implement
        
         // Give the creator all initial tokens
         balances[msg.sender] = _initialAmount;
+        totalSupply = _initialAmount;
+
         
         // Set the name for display purposes
         name = _tokenName;
@@ -148,5 +153,9 @@ contract BCCoin is Interface {    // Inheriting the interface requires implement
 
     function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
         return allowed[_owner][_spender];
+    }
+
+    function totalSupply() constant returns (uint256 supply) {
+        return totalSupply;
     }
 }
