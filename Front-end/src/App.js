@@ -3,31 +3,69 @@ import './App.css';
 import web3 from './web3';
 import token from './token';
 class App extends Component {
-  state = {
+state = {
     owner: '',
-    balance: '',
-    value: '',
-    message: '',
-    address: '',
-    addressFrom: ''
-  };
+    rider: '',
+    driver: '',
+    rideCost: '',
+    escrowBalance: 0,
+    multiplier: 1000000000000000000
+};
  async componentDidMount()  {
-    const owner =  await token.methods.Owner().call(); //The address of the deployer which is the the address of the account you're using on metmask.Its for a better front end.
-    
+    const owner =  await token.methods.getOwner().call();
+    const rider =  await token.methods.getRider().call();
+    const driver =  await token.methods.getDriver().call();
+    const rideCost =  await token.methods.getRideCost().call();
+    const escrowBalance =  await token.methods.getEscrowBalance().call();
+    // rideCost = rideCost/100;
     this.setState({ owner });
+    this.setState({ rider });
+    this.setState({ driver });
+    this.setState({ rideCost });
+    this.setState({ escrowBalance: escrowBalance });
   }
-//In all functions you need to get the accounts so that account[0] will point to the current account you're using on metamask, also notice when you should use .call and .send. 
-//*Note: if you use .call there is no need for the from key . Try it. 
-  getTokens = async event => {
+
+  orderRide = async event => {
     event.preventDefault();
     const accounts = await web3.eth.getAccounts();
-    this.setState({ message: 'Waiting on transaction success...' });
-    await token.methods.getTokens().send({
+    this.setState({ message: 'Your Ride is being Ordered...' });
+    await token.methods.orderRide().send({
       from: accounts[0],
-      value: web3.utils.toWei(this.state.value, 'ether')
+      value: this.state.rideCost
     });
-    this.setState({ message: 'You got your tokens!' });
+    this.setState({ message: 'Waiting for a driver to accept!' });
+    var escrowBalance = await token.methods.getEscrowBalance().call();
+    this.setState({ escrowBalance: escrowBalance });
+
   };
+
+acceptRide = async event => {
+    event.preventDefault();
+    const accounts = await web3.eth.getAccounts();
+    this.setState({ message: 'The driver is accepting the order ..' });
+    await token.methods.accept().send({
+        from: accounts[0],
+    });
+    var escrowBalance = await token.methods.getEscrowBalance().call();
+    this.setState({ escrowBalance: escrowBalance });
+    this.setState({ message: 'The driver on his way!' });
+};
+
+finishRide = async event => {
+    event.preventDefault();
+    const accounts = await web3.eth.getAccounts();
+    this.setState({ message: 'Finishing the ride ...' });
+    await token.methods.accept().send({
+        from: accounts[0],
+    });
+
+    const escrowBalance = await token.methods.getEscrowBalance().call();
+    this.setState({ escrowBalance: escrowBalance });
+
+    this.setState({ message: 'We hope you enjoyed your trip with RideChain , dont forget to rate us !' });
+};
+
+
   getBalance = async event => { 
     event.preventDefault();
     const accounts = await web3.eth.getAccounts();
@@ -79,112 +117,70 @@ console.log(result)
    this.setState({ message: 'You sold your tokens!' });
   };
 
+  divStyle = {
+        padding: '1rem',
+    };
+
+  messageColor = {
+      color: '#ff0000'
+  }
+
   render() {
     return (
-      <div>
-        <h2>My Currency</h2>
+      <div style={this.divStyle}>
+          <img src={require('./logo.jpg')} />
+
+          <h2>Ride Chain !</h2>
         <p>
-          This token is owned by {this.state.owner}.
+          Ride chain is owned by {this.state.owner}
         </p>
+
+          <h2>Ride Information</h2>
+          <p>
+              Rider: Qais ( {this.state.rider} )
+          </p>
+
+          <p>
+              Driver: Tareq ( {this.state.driver} )
+          </p>
+
+          <p>
+              Ride Cost: {this.state.rideCost/this.state.multiplier} ETH , {(this.state.rideCost/this.state.multiplier)*297} USD
+          </p>
+
+          <p style={this.messageColor}>
+              Escrow Balance: {this.state.escrowBalance/this.state.multiplier} ETH , {(this.state.escrowBalance/this.state.multiplier)*297} USD
+          </p>
+
+          <p>
+              Ride Route: Business Park to Khalda Circle (2.8 KM)
+          </p>
         <hr />
-        <form onSubmit={this.getTokens}>
-          <h4>Buy Tokens</h4>
-          <div>
-            <label>Amount of ether to enter</label>
-            <input
-              value={this.state.value}
-              onChange={event => this.setState({ value: event.target.value })}
-            />
-          </div>
-          <button>getTokens</button>
-        </form>
-        <hr />
-         <form onSubmit={this.getBalance}>
-          <h4>View your balance of Tokens</h4>
-          <div>
-            <label>Enter the address</label>
-            <input
-              address={this.state.address}
-              onChange={event => this.setState({ address: event.target.value })}
-            />
-          </div>
-          <button>Get balance!</button>
-        </form>
-        <hr />
-        <h1>{this.state.message}</h1>
-        <hr />
-         <form onSubmit={this.transfer}>
-          <h4>Transfer token to an address</h4>
-          <div>
-            <label>Enter the address to transfer to</label>
-            <input
-              address={this.state.address}
-              onChange={event => this.setState({ address: event.target.value })}
-            />
-            <br /><br />
-            <label>Enter the token to transfer</label>
-            <input
-              value={this.state.value}
-              onChange={event => this.setState({ value: event.target.value })}
-            />
-          </div>
-          <button>Transfer tokens!</button>
-        </form>
-        <hr />
-         <form onSubmit={this.transferFrom}>
-          <h4>Transfer token to an address to another</h4>
-          <div>
-            <label>Enter the address to transfer from</label>
-            <input
-              addressFrom={this.state.addressFrom}
-              onChange={event => this.setState({ addressFrom: event.target.value })}
-            />
-            <br /><br />
-            <label>Enter the address to transfer to</label>
-            <input
-              address={this.state.address}
-              onChange={event => this.setState({ address: event.target.value })}
-            />
-            <br /><br />
-            <label>Enter the token to transfer</label>
-            <input
-              value={this.state.value}
-              onChange={event => this.setState({ value: event.target.value })}
-            />
-          </div>
-          <button>Transfer tokens!</button>
-        </form>
-        <hr />
-        <form onSubmit={this.approve}>
-          <h4>give permission to an account to spend some ether</h4>
-          <div>
-            <label>Enter the address of the spender</label>
-            <input
-              address={this.state.address}
-              onChange={event => this.setState({ address: event.target.value })}
-            />
-            <br /><br />
-            <label>Enter the allowance value</label>
-            <input
-              value={this.state.value}
-              onChange={event => this.setState({ value: event.target.value })}
-            />
-          </div>
-          <button>Set allowance!</button>
-        </form>
-        <hr />
-        <form onSubmit={this.getEthers}>
-         <h4>Sell Tokens</h4>
-         <div>
-           <label>Amount of tokens to sell</label>
-           <input
-             value={this.state.value}
-             onChange={event => this.setState({ value: event.target.value })}
-           />
-         </div>
-         <button>sell Tokens</button>
-       </form>
-       <hr />
+
+          <h2>Ride in action</h2>
+          <form onSubmit={this.orderRide}>
+              <p>
+                  Rider: Order Ride <button>CONFIRM</button>
+              </p>
+          </form>
+          <form onSubmit={this.acceptRide}>
+              <p>
+                  Driver: Accept Ride <button>Accept</button>
+              </p>
+          </form>
+          <form onSubmit={this.finishRide}>
+              <p>
+                  Rider: Approve the drop <button>Finish Ride</button>
+              </p>
+          </form>
+
+          <hr />
+
+          <h1 style={this.messageColor}>{this.state.message}</h1>
+
+          <img src={require('./giphy.gif')} />
+
+
       </div>
     );
   }

@@ -1,19 +1,16 @@
 const path = require('path');
 const fs = require('fs');
 const solc = require('solc'); // JavaScript bindings for the Solidity compiler.
-const BCPath = path.resolve(__dirname, 'contracts', 'BCCoin.sol'); 
-const interfacePath = path.resolve(__dirname, 'contracts', 'Interface.sol');
+const BCPath = path.resolve(__dirname, 'contracts', 'RideChain.sol');
 
 const source = fs.readFileSync(BCPath, 'utf8');
-const source2 = fs.readFileSync(interfacePath, 'utf8');
 
-// to compile more than one contact 
 const input = {
   sources: {
-    'BCCoin.sol': source,
-    'Interface.sol': source2
-  }
+    'RideChain.sol': source
+    }
 };
-let compiled = solc.compile(input, 1); // compiled contarct
-console.log(compiled); // it will help you in fixing your solidity code, comment it when youre done. 
-module.exports  = compiled.contracts[ 'BCCoin.sol:BCCoin'];
+
+let compiled = solc.compile(input, 1);
+console.log(compiled);
+module.exports  = compiled.contracts[ 'RideChain.sol:RideChain'];
